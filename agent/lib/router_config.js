@@ -126,7 +126,7 @@ RouterConfig.prototype.add_linkroute = function (l) {
 };
 
 function distinct_container_per_direction(props) {
-    if (props.containerId !== undefined) {
+    if (props.containerId) {
         props.containerId = props.containerId + '-' + props.direction;
     }
     return props;
