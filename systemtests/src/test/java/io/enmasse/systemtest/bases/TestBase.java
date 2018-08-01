@@ -82,8 +82,16 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
         }
     }
 
-    protected static void deleteAllAddressSpaces() throws Exception {
-            TestUtils.deleteAllAddressSpaces(addressApiClient, logCollector);
+    protected void deleteAllAddressSpaces() throws Exception {
+        ArrayList<AddressSpace> spaces = new ArrayList<>();
+        spaces.addAll(addressSpaceList);
+
+        for (AddressSpace addressSpace : spaces) {
+            if (!TestUtils.existAddressSpace(addressApiClient, addressSpace.getName())) {
+                TestUtils.deleteAllAddressSpaces(addressApiClient);
+                TestUtils.waitForAddressSpaceDeleted(kubernetes, addressSpace);
+            }
+        }
     }
 
     protected AddressSpace getSharedAddressSpace() {
@@ -92,12 +100,13 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
 
     @BeforeEach
     public void setup() throws MalformedURLException {
-
+        if (addressApiClient == null) {
         addressApiClient = new AddressApiClient(kubernetes);
 
         addressSpaceList = new ArrayList<>();
         amqpClientFactory = new AmqpClientFactory(kubernetes, environment, null, defaultCredentials);
         mqttClientFactory = new MqttClientFactory(kubernetes, environment, null, defaultCredentials);
+        }
     }
 
     @AfterEach

@@ -222,6 +222,7 @@ class ApiServerTest extends TestBase {
                     "Incorrect response from server on missing plan!");
         }
 
+        logWithSeparator(log, "Removing all address spaces");
         deleteAllAddressSpaces();
     }
 
@@ -247,15 +248,6 @@ class ApiServerTest extends TestBase {
         addresses = getAddressesObjects(addrSpace, Optional.empty()).get(30, TimeUnit.SECONDS);
         assertThat(addresses.size(), is(3));
         TestUtils.waitForDestinationsReady(addressApiClient, addrSpace, new TimeoutBudget(5, TimeUnit.MINUTES), anycast, multicast, longname);
-    }
-
-    @Test
-    void testDeleteAddressSpaces() throws Exception {
-        AddressSpace addressSpace = new AddressSpace("test-rest-api-addr-space", AddressSpaceType.BROKERED);
-        AddressSpace addressSpace2 = new AddressSpace("test-rest-api-addr-space2", AddressSpaceType.BROKERED);
-        createAddressSpaceList(addressSpace, addressSpace2);
-
-        deleteAllAddressSpaces();
     }
 
 }
